@@ -115,7 +115,6 @@ namespace SurfaceGeometry {
 
     // Object Data
     extern Array1D<SurfaceData> SurfaceTmp; // Allocated/Deallocated during input processing
-    extern HeatBalanceKivaManager::KivaManager kivaManager;
 
     // Functions
 
@@ -440,6 +439,18 @@ namespace SurfaceGeometry {
 
 } // namespace SurfaceGeometry
 
+struct SurfaceGeometryData : BaseGlobalStruct {
+
+    HeatBalanceKivaManager::KivaManager kivaManager;
+
+    void clear_state() override
+    {
+        kivaManager = HeatBalanceKivaManager::KivaManager();
+    }
+
+    // Default Constructor
+    SurfaceGeometryData() = default;
+};
 } // namespace EnergyPlus
 
 #endif
