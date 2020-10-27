@@ -105,13 +105,6 @@ namespace SurfaceGeometry {
     extern int Warning2Count;                // counts of overriding exterior windows with Window 5/6 glazing systems
     extern int Warning3Count;                // counts of overriding interior windows with Window 5/6 glazing systems
 
-    // SUBROUTINE SPECIFICATIONS FOR MODULE SurfaceGeometry
-
-    // Object Data
-    extern HeatBalanceKivaManager::KivaManager kivaManager;
-
-    // Functions
-
     // Clears the global data in HeatBalanceManager.
     // Needed for unit tests, should not be normally called.
     void clear_state();
@@ -437,10 +430,12 @@ namespace SurfaceGeometry {
 struct SurfaceGeometryData : BaseGlobalStruct {
 
     Array1D<DataSurfaces::SurfaceData> SurfaceTmp;
+    HeatBalanceKivaManager::KivaManager kivaManager;
 
     void clear_state() override
     {
         this->SurfaceTmp.deallocate();
+        this->kivaManager = HeatBalanceKivaManager::KivaManager();
     }
 };
 

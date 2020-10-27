@@ -181,7 +181,6 @@ namespace SurfaceGeometry {
     // SUBROUTINE SPECIFICATIONS FOR MODULE SurfaceGeometry
 
     // Object Data
-    HeatBalanceKivaManager::KivaManager kivaManager;
     ExposedFoundationPerimeter exposedFoundationPerimeter;
 
     // Functions
@@ -210,7 +209,6 @@ namespace SurfaceGeometry {
         Warning3Count = 0;
         GetSurfaceDataOneTimeFlag = false;
         UniqueSurfaceNames.clear();
-        kivaManager = HeatBalanceKivaManager::KivaManager();
         firstTime = true;
         noTransform = true;
         CheckConvexityFirstTime = true;
@@ -2215,7 +2213,7 @@ namespace SurfaceGeometry {
             if (Surface(SurfNum).HeatTransSurf && Surface(SurfNum).ExtBoundCond > 0) continue;
             if (Surface(SurfNum).HeatTransSurf && Surface(SurfNum).ExtBoundCond == Ground) continue;
             if (Surface(SurfNum).HeatTransSurf && Surface(SurfNum).ExtBoundCond == KivaFoundation) {
-                if (!ErrorsFound) kivaManager.foundationInputs[Surface(SurfNum).OSCPtr].surfaces.push_back(SurfNum);
+                if (!ErrorsFound) state.dataSurfaceGeometry->kivaManager.foundationInputs[Surface(SurfNum).OSCPtr].surfaces.push_back(SurfNum);
                 continue;
             }
             if (Surface(SurfNum).HeatTransSurf && Surface(SurfNum).ExtBoundCond == OtherSideCoefNoCalcExt) continue;
@@ -3321,17 +3319,17 @@ namespace SurfaceGeometry {
                     // Find foundation object, if blank use default
                     if (lAlphaFieldBlanks(ArgPointer + 1)) {
 
-                        if (!kivaManager.defaultSet) {
+                        if (!state.dataSurfaceGeometry->kivaManager.defaultSet) {
                             // Apply default foundation if no other foundation object specified
-                            if (kivaManager.foundationInputs.size() == 0) {
-                                kivaManager.defineDefaultFoundation();
+                            if (state.dataSurfaceGeometry->kivaManager.foundationInputs.size() == 0) {
+                                state.dataSurfaceGeometry->kivaManager.defineDefaultFoundation();
                             }
-                            kivaManager.addDefaultFoundation();
+                            state.dataSurfaceGeometry->kivaManager.addDefaultFoundation();
                         }
-                        state.dataSurfaceGeometry->SurfaceTmp(SurfNum).OSCPtr = kivaManager.defaultIndex; // Reuse OSC pointer...shouldn't be used for non OSC surfaces anyway.
+                        state.dataSurfaceGeometry->SurfaceTmp(SurfNum).OSCPtr = state.dataSurfaceGeometry->kivaManager.defaultIndex; // Reuse OSC pointer...shouldn't be used for non OSC surfaces anyway.
                     } else {
-                        Found = kivaManager.findFoundation(state.dataSurfaceGeometry->SurfaceTmp(SurfNum).ExtBoundCondName);
-                        if (Found != (int)kivaManager.foundationInputs.size()) {
+                        Found = state.dataSurfaceGeometry->kivaManager.findFoundation(state.dataSurfaceGeometry->SurfaceTmp(SurfNum).ExtBoundCondName);
+                        if (Found != (int)state.dataSurfaceGeometry->kivaManager.foundationInputs.size()) {
                             state.dataSurfaceGeometry->SurfaceTmp(SurfNum).OSCPtr = Found;
                         } else {
                             ShowSevereError(cCurrentModuleObject + "=\"" + state.dataSurfaceGeometry->SurfaceTmp(SurfNum).Name + "\", invalid " +
@@ -7289,7 +7287,7 @@ namespace SurfaceGeometry {
 
         // Setup Kiva instances
         if (DataHeatBalance::AnyKiva) {
-            if (!ErrorsFound) ErrorsFound = kivaManager.setupKivaInstances(state);
+            if (!ErrorsFound) ErrorsFound = state.dataSurfaceGeometry->kivaManager.setupKivaInstances(state);
         }
 
         // test for missing materials for algorithms selected
@@ -9080,41 +9078,41 @@ namespace SurfaceGeometry {
             int alpF = 1;
 
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.soilK = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.soilK = rNumericArgs(numF);
             }
             numF++;
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.soilRho = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.soilRho = rNumericArgs(numF);
             }
             numF++;
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.soilCp = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.soilCp = rNumericArgs(numF);
             }
             numF++;
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.groundSolarAbs = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.groundSolarAbs = rNumericArgs(numF);
             }
             numF++;
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.groundThermalAbs = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.groundThermalAbs = rNumericArgs(numF);
             }
             numF++;
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.groundRoughness = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.groundRoughness = rNumericArgs(numF);
             }
             numF++;
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.farFieldWidth = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.farFieldWidth = rNumericArgs(numF);
             }
             numF++;
 
             if (!lAlphaFieldBlanks(alpF)) {
                 if (UtilityRoutines::SameString(cAlphaArgs(alpF), "ZeroFlux")) {
-                    kivaManager.settings.deepGroundBoundary = HeatBalanceKivaManager::KivaManager::Settings::ZERO_FLUX;
+                    state.dataSurfaceGeometry->kivaManager.settings.deepGroundBoundary = HeatBalanceKivaManager::KivaManager::Settings::ZERO_FLUX;
                 } else if (UtilityRoutines::SameString(cAlphaArgs(alpF), "GroundWater")) {
-                    kivaManager.settings.deepGroundBoundary = HeatBalanceKivaManager::KivaManager::Settings::GROUNDWATER;
+                    state.dataSurfaceGeometry->kivaManager.settings.deepGroundBoundary = HeatBalanceKivaManager::KivaManager::Settings::GROUNDWATER;
                 } else if (UtilityRoutines::SameString(cAlphaArgs(alpF), "Autoselect")) {
-                    kivaManager.settings.deepGroundBoundary = HeatBalanceKivaManager::KivaManager::Settings::AUTO;
+                    state.dataSurfaceGeometry->kivaManager.settings.deepGroundBoundary = HeatBalanceKivaManager::KivaManager::Settings::AUTO;
                 } else {
                     ErrorsFound = true;
                     ShowSevereError("Foundation:Kiva:Settings, " + cAlphaArgs(alpF) + " is not a valid choice for " + cAlphaFieldNames(alpF));
@@ -9123,27 +9121,27 @@ namespace SurfaceGeometry {
             alpF++;
 
             if (lNumericFieldBlanks(numF) || rNumericArgs(numF) == DataGlobalConstants::AutoCalculate()) {
-                kivaManager.settings.deepGroundDepth = 40.0;
+                state.dataSurfaceGeometry->kivaManager.settings.deepGroundDepth = 40.0;
             } else {
-                kivaManager.settings.deepGroundDepth = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.deepGroundDepth = rNumericArgs(numF);
             }
             numF++;
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.minCellDim = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.minCellDim = rNumericArgs(numF);
             }
             numF++;
             if (!lNumericFieldBlanks(numF)) {
-                kivaManager.settings.maxGrowthCoeff = rNumericArgs(numF);
+                state.dataSurfaceGeometry->kivaManager.settings.maxGrowthCoeff = rNumericArgs(numF);
             }
             numF++;
 
             if (!lAlphaFieldBlanks(alpF)) {
                 if (UtilityRoutines::SameString(cAlphaArgs(alpF), "Hourly")) {
-                    kivaManager.settings.timestepType = HeatBalanceKivaManager::KivaManager::Settings::HOURLY;
-                    kivaManager.timestep = 3600.; // seconds
+                    state.dataSurfaceGeometry->kivaManager.settings.timestepType = HeatBalanceKivaManager::KivaManager::Settings::HOURLY;
+                    state.dataSurfaceGeometry->kivaManager.timestep = 3600.; // seconds
                 } else /* if (UtilityRoutines::SameString(cAlphaArgs( alpF ), "Timestep")) */ {
-                    kivaManager.settings.timestepType = HeatBalanceKivaManager::KivaManager::Settings::TIMESTEP;
-                    kivaManager.timestep = DataGlobals::MinutesPerTimeStep * 60.;
+                    state.dataSurfaceGeometry->kivaManager.settings.timestepType = HeatBalanceKivaManager::KivaManager::Settings::TIMESTEP;
+                    state.dataSurfaceGeometry->kivaManager.timestep = DataGlobals::MinutesPerTimeStep * 60.;
                 }
             }
             alpF++;
@@ -9156,7 +9154,7 @@ namespace SurfaceGeometry {
         int TotKivaFnds = inputProcessor->getNumObjectsFound(cCurrentModuleObject);
 
         if (TotKivaFnds > 0) {
-            kivaManager.defineDefaultFoundation();
+            state.dataSurfaceGeometry->kivaManager.defineDefaultFoundation();
 
             Array1D_string fndNames;
             fndNames.allocate(TotKivaFnds + 1);
@@ -9195,7 +9193,7 @@ namespace SurfaceGeometry {
 
                 // Start with copy of default
                 auto &fnd = fndInput.foundation;
-                fnd = kivaManager.defaultFoundation.foundation;
+                fnd = state.dataSurfaceGeometry->kivaManager.defaultFoundation.foundation;
 
                 // Indoor temperature
                 if (!lNumericFieldBlanks(numF)) {
@@ -9532,7 +9530,7 @@ namespace SurfaceGeometry {
                     }
                 }
 
-                kivaManager.foundationInputs.push_back(fndInput);
+                state.dataSurfaceGeometry->kivaManager.foundationInputs.push_back(fndInput);
             }
         }
     }
