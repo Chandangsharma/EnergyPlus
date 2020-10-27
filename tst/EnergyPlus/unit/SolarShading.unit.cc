@@ -642,8 +642,8 @@ TEST_F(EnergyPlusFixture, SolarShadingTest_FigureSolarBeamAtTimestep)
 
     SurfaceGeometry::CosZoneRelNorth(1) = std::cos(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     SurfaceGeometry::SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     SurfaceGeometry::GetSurfaceData(state, FoundError); // setup zone geometry and get zone data
     EXPECT_FALSE(FoundError);                    // expect no errors
@@ -1042,8 +1042,8 @@ TEST_F(EnergyPlusFixture, SolarShadingTest_ExternalShadingIO)
 
     SurfaceGeometry::CosZoneRelNorth(1) = std::cos(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     SurfaceGeometry::SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     compare_err_stream("");                         // just for debugging
     SurfaceGeometry::SetupZoneGeometry(state, FoundError); // this calls GetSurfaceData()
@@ -1455,8 +1455,8 @@ TEST_F(EnergyPlusFixture, SolarShadingTest_DisableGroupSelfShading)
 
     SurfaceGeometry::CosZoneRelNorth(1) = std::cos(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     SurfaceGeometry::SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     compare_err_stream("");                         // just for debugging
     SurfaceGeometry::SetupZoneGeometry(state, FoundError); // this calls GetSurfaceData()
@@ -1823,8 +1823,8 @@ TEST_F(EnergyPlusFixture, SolarShadingTest_PolygonClippingDirect)
 
     SurfaceGeometry::CosZoneRelNorth(1) = std::cos(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     SurfaceGeometry::SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     SurfaceGeometry::GetSurfaceData(state, FoundError); // setup zone geometry and get zone data
     EXPECT_FALSE(FoundError);                                                 // expect no errors
@@ -2230,8 +2230,8 @@ WindowMaterial:SimpleGlazingSystem,
 
     SurfaceGeometry::CosZoneRelNorth(1) = std::cos(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     SurfaceGeometry::SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     SurfaceGeometry::GetSurfaceData(state, FoundError); // setup zone geometry and get zone data
     EXPECT_FALSE(FoundError);                    // expect no errors
@@ -2542,8 +2542,8 @@ SurfaceGeometry::SinZoneRelNorth.allocate(1);
 
 SurfaceGeometry::CosZoneRelNorth(1) = std::cos(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
 SurfaceGeometry::SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-SurfaceGeometry::CosBldgRelNorth = 1.0;
-SurfaceGeometry::SinBldgRelNorth = 0.0;
+state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
 SurfaceGeometry::GetSurfaceData(state, FoundError); // setup zone geometry and get zone data
 EXPECT_FALSE(FoundError);                    // expect no errors

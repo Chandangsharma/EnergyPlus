@@ -248,9 +248,9 @@ TEST_F(EnergyPlusFixture, SurfaceControlMovableInsulation_InvalidWindowSimpleGla
     SurfaceGeometry::CosZoneRelNorth.allocate(2);
     SurfaceGeometry::SinZoneRelNorth.allocate(2);
     SurfaceGeometry::CosZoneRelNorth = 1.0;
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
     SurfaceGeometry::SinZoneRelNorth = 0.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
     // set surface data
     DataSurfaces::TotSurfaces = 1;
     SurfaceGeometry::SurfaceTmp.allocate(1);

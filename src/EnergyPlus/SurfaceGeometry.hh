@@ -91,14 +91,8 @@ namespace SurfaceGeometry {
         SolarEnclosures
     };
 
-    // DERIVED TYPE DEFINITIONS
-
     // MODULE VARIABLE DECLARATIONS:
     // Following are used only during getting vertices, so are module variables here.
-    extern Real64 CosBldgRelNorth;          // Cosine of the building rotation (relative north) (includes appendix G rotation)
-    extern Real64 SinBldgRelNorth;          // Sine of the building rotation (relative north)   (includes appendix G rotation)
-    extern Real64 CosBldgRotAppGonly;       // Cosine of the building rotation for appendix G only(relative north)
-    extern Real64 SinBldgRotAppGonly;       // Sine of the building rotation for appendix G only (relative north)
     extern Array1D<Real64> CosZoneRelNorth; // Cosine of the zone rotation (relative north)
     extern Array1D<Real64> SinZoneRelNorth; // Sine of the zone rotation (relative north)
 
@@ -439,6 +433,22 @@ namespace SurfaceGeometry {
     );
 
 } // namespace SurfaceGeometry
+
+struct SurfaceGeometryData : BaseGlobalStruct {
+    Real64 CosBldgRelNorth = 0.0;     // Cosine of the building rotation (relative north) (includes appendix G rotation)
+    Real64 SinBldgRelNorth = 0.0;     // Sine of the building rotation (relative north)   (includes appendix G rotation)
+    Real64 CosBldgRotAppGonly = 0.0;  // Cosine of the building rotation for appendix G only(relative north)
+    Real64 SinBldgRotAppGonly = 0.0;  // Sine of the building rotation for appendix G only (relative north)
+
+    void clear_state() override
+    {
+        CosBldgRelNorth = 0.0;
+        SinBldgRelNorth = 0.0;
+        CosBldgRotAppGonly = 0.0;
+        SinBldgRotAppGonly = 0.0;
+    }
+
+};
 
 } // namespace EnergyPlus
 

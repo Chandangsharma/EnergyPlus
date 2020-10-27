@@ -161,10 +161,6 @@ namespace SurfaceGeometry {
     } // namespace
 
     // Following are used only during getting vertices, so are module variables here.
-    Real64 CosBldgRelNorth(0.0);     // Cosine of the building rotation (relative north) (includes appendix G rotation)
-    Real64 SinBldgRelNorth(0.0);     // Sine of the building rotation (relative north)   (includes appendix G rotation)
-    Real64 CosBldgRotAppGonly(0.0);  // Cosine of the building rotation for appendix G only(relative north)
-    Real64 SinBldgRotAppGonly(0.0);  // Sine of the building rotation for appendix G only (relative north)
     Array1D<Real64> CosZoneRelNorth; // Cosine of the zone rotation (relative north)
     Array1D<Real64> SinZoneRelNorth; // Sine of the zone rotation (relative north)
 
@@ -196,11 +192,6 @@ namespace SurfaceGeometry {
         Xpsv.deallocate();
         Ypsv.deallocate();
         Zpsv.deallocate();
-        // Following are used only during getting vertices, so are module variables here.
-        CosBldgRelNorth = 0.0;
-        SinBldgRelNorth = 0.0;
-        CosBldgRotAppGonly = 0.0;
-        SinBldgRotAppGonly = 0.0;
         CosZoneRelNorth.deallocate();
         SinZoneRelNorth.deallocate();
         NoGroundTempObjWarning = true;
@@ -420,12 +411,12 @@ namespace SurfaceGeometry {
         // as setting up DaylightingCoords
 
         // these include building north axis and Building Rotation for Appendix G
-        CosBldgRelNorth = std::cos(-(BuildingAzimuth + BuildingRotationAppendixG) * DataGlobalConstants::DegToRadians());
-        SinBldgRelNorth = std::sin(-(BuildingAzimuth + BuildingRotationAppendixG) * DataGlobalConstants::DegToRadians());
+        state.dataSurfaceGeometry->CosBldgRelNorth = std::cos(-(BuildingAzimuth + BuildingRotationAppendixG) * DataGlobalConstants::DegToRadians());
+        state.dataSurfaceGeometry->SinBldgRelNorth = std::sin(-(BuildingAzimuth + BuildingRotationAppendixG) * DataGlobalConstants::DegToRadians());
 
         // these are only for Building Rotation for Appendix G when using world coordinate system
-        CosBldgRotAppGonly = std::cos(-BuildingRotationAppendixG * DataGlobalConstants::DegToRadians());
-        SinBldgRotAppGonly = std::sin(-BuildingRotationAppendixG * DataGlobalConstants::DegToRadians());
+        state.dataSurfaceGeometry->CosBldgRotAppGonly = std::cos(-BuildingRotationAppendixG * DataGlobalConstants::DegToRadians());
+        state.dataSurfaceGeometry->SinBldgRotAppGonly = std::sin(-BuildingRotationAppendixG * DataGlobalConstants::DegToRadians());
 
         CosZoneRelNorth.allocate(NumOfZones);
         SinZoneRelNorth.allocate(NumOfZones);
@@ -3886,15 +3877,15 @@ namespace SurfaceGeometry {
                      Zone(SurfaceTmp(SurfNum).Zone).OriginX;
                 Yb = XCoord * SinZoneRelNorth(SurfaceTmp(SurfNum).Zone) + YCoord * CosZoneRelNorth(SurfaceTmp(SurfNum).Zone) +
                      Zone(SurfaceTmp(SurfNum).Zone).OriginY;
-                XLLC = Xb * CosBldgRelNorth - Yb * SinBldgRelNorth;
-                YLLC = Xb * SinBldgRelNorth + Yb * CosBldgRelNorth;
+                XLLC = Xb * state.dataSurfaceGeometry->CosBldgRelNorth - Yb * state.dataSurfaceGeometry->SinBldgRelNorth;
+                YLLC = Xb * state.dataSurfaceGeometry->SinBldgRelNorth + Yb * state.dataSurfaceGeometry->CosBldgRelNorth;
                 ZLLC = ZCoord + Zone(SurfaceTmp(SurfNum).Zone).OriginZ;
             } else {
                 if (SurfaceTmp(SurfNum).Class == SurfaceClass_Detached_B) {
                     Xb = XCoord;
                     Yb = YCoord;
-                    XLLC = Xb * CosBldgRelNorth - Yb * SinBldgRelNorth;
-                    YLLC = Xb * SinBldgRelNorth + Yb * CosBldgRelNorth;
+                    XLLC = Xb * state.dataSurfaceGeometry->CosBldgRelNorth - Yb * state.dataSurfaceGeometry->SinBldgRelNorth;
+                    YLLC = Xb * state.dataSurfaceGeometry->SinBldgRelNorth + Yb * state.dataSurfaceGeometry->CosBldgRelNorth;
                     ZLLC = ZCoord;
                 } else {
                     XLLC = XCoord;
@@ -3908,8 +3899,8 @@ namespace SurfaceGeometry {
             Yb = YCoord;
             ZLLC = ZCoord;
             if (SurfaceTmp(SurfNum).Class != SurfaceClass_Detached_F) {
-                XLLC = Xb * CosBldgRotAppGonly - Yb * SinBldgRotAppGonly;
-                YLLC = Xb * SinBldgRotAppGonly + Yb * CosBldgRotAppGonly;
+                XLLC = Xb * state.dataSurfaceGeometry->CosBldgRotAppGonly - Yb * state.dataSurfaceGeometry->SinBldgRotAppGonly;
+                YLLC = Xb * state.dataSurfaceGeometry->SinBldgRotAppGonly + Yb * state.dataSurfaceGeometry->CosBldgRotAppGonly;
             } else {
                 XLLC = Xb;
                 YLLC = Yb;
@@ -7622,16 +7613,16 @@ namespace SurfaceGeometry {
                          Zone(ZoneNum).OriginX;
                     Yb = SurfaceTmp(SurfNum).Vertex(n).x * SinZoneRelNorth(ZoneNum) + SurfaceTmp(SurfNum).Vertex(n).y * CosZoneRelNorth(ZoneNum) +
                          Zone(ZoneNum).OriginY;
-                    SurfaceTmp(SurfNum).Vertex(n).x = Xb * CosBldgRelNorth - Yb * SinBldgRelNorth;
-                    SurfaceTmp(SurfNum).Vertex(n).y = Xb * SinBldgRelNorth + Yb * CosBldgRelNorth;
+                    SurfaceTmp(SurfNum).Vertex(n).x = Xb * state.dataSurfaceGeometry->CosBldgRelNorth - Yb * state.dataSurfaceGeometry->SinBldgRelNorth;
+                    SurfaceTmp(SurfNum).Vertex(n).y = Xb * state.dataSurfaceGeometry->SinBldgRelNorth + Yb * state.dataSurfaceGeometry->CosBldgRelNorth;
                     SurfaceTmp(SurfNum).Vertex(n).z += Zone(ZoneNum).OriginZ;
                 }
             } else if (SurfaceTmp(SurfNum).Class == SurfaceClass_Detached_B) {
                 for (n = 1; n <= NSides; ++n) {
                     Xb = SurfaceTmp(SurfNum).Vertex(n).x;
                     Yb = SurfaceTmp(SurfNum).Vertex(n).y;
-                    SurfaceTmp(SurfNum).Vertex(n).x = Xb * CosBldgRelNorth - Yb * SinBldgRelNorth;
-                    SurfaceTmp(SurfNum).Vertex(n).y = Xb * SinBldgRelNorth + Yb * CosBldgRelNorth;
+                    SurfaceTmp(SurfNum).Vertex(n).x = Xb * state.dataSurfaceGeometry->CosBldgRelNorth - Yb * state.dataSurfaceGeometry->SinBldgRelNorth;
+                    SurfaceTmp(SurfNum).Vertex(n).y = Xb * state.dataSurfaceGeometry->SinBldgRelNorth + Yb * state.dataSurfaceGeometry->CosBldgRelNorth;
                 }
             }
         } else {
@@ -7641,15 +7632,15 @@ namespace SurfaceGeometry {
                 for (n = 1; n <= NSides; ++n) {
                     Xb = SurfaceTmp(SurfNum).Vertex(n).x;
                     Yb = SurfaceTmp(SurfNum).Vertex(n).y;
-                    SurfaceTmp(SurfNum).Vertex(n).x = Xb * CosBldgRotAppGonly - Yb * SinBldgRotAppGonly;
-                    SurfaceTmp(SurfNum).Vertex(n).y = Xb * SinBldgRotAppGonly + Yb * CosBldgRotAppGonly;
+                    SurfaceTmp(SurfNum).Vertex(n).x = Xb * state.dataSurfaceGeometry->CosBldgRotAppGonly - Yb * state.dataSurfaceGeometry->SinBldgRotAppGonly;
+                    SurfaceTmp(SurfNum).Vertex(n).y = Xb * state.dataSurfaceGeometry->SinBldgRotAppGonly + Yb * state.dataSurfaceGeometry->CosBldgRotAppGonly;
                 }
             } else if (SurfaceTmp(SurfNum).Class == SurfaceClass_Detached_B) {
                 for (n = 1; n <= NSides; ++n) {
                     Xb = SurfaceTmp(SurfNum).Vertex(n).x;
                     Yb = SurfaceTmp(SurfNum).Vertex(n).y;
-                    SurfaceTmp(SurfNum).Vertex(n).x = Xb * CosBldgRotAppGonly - Yb * SinBldgRotAppGonly;
-                    SurfaceTmp(SurfNum).Vertex(n).y = Xb * SinBldgRotAppGonly + Yb * CosBldgRotAppGonly;
+                    SurfaceTmp(SurfNum).Vertex(n).x = Xb * state.dataSurfaceGeometry->CosBldgRotAppGonly - Yb * state.dataSurfaceGeometry->SinBldgRotAppGonly;
+                    SurfaceTmp(SurfNum).Vertex(n).y = Xb * state.dataSurfaceGeometry->SinBldgRotAppGonly + Yb * state.dataSurfaceGeometry->CosBldgRotAppGonly;
                 }
             }
         }
@@ -12592,15 +12583,15 @@ namespace SurfaceGeometry {
             Xo = SurfaceTmp(SurfNum).Vertex(n).x; // world coordinates.... shifted by relative north angle...
             Yo = SurfaceTmp(SurfNum).Vertex(n).y;
             // next derotate the building
-            XnoRot = Xo * CosBldgRelNorth + Yo * SinBldgRelNorth;
-            YnoRot = Yo * CosBldgRelNorth - Xo * SinBldgRelNorth;
+            XnoRot = Xo * state.dataSurfaceGeometry->CosBldgRelNorth + Yo * state.dataSurfaceGeometry->SinBldgRelNorth;
+            YnoRot = Yo * state.dataSurfaceGeometry->CosBldgRelNorth - Xo * state.dataSurfaceGeometry->SinBldgRelNorth;
             // translate
             Xtrans = XnoRot * std::sqrt(NewAspectRatio / OldAspectRatio);
             Ytrans = YnoRot * std::sqrt(OldAspectRatio / NewAspectRatio);
             // rerotate
-            SurfaceTmp(SurfNum).Vertex(n).x = Xtrans * CosBldgRelNorth - Ytrans * SinBldgRelNorth;
+            SurfaceTmp(SurfNum).Vertex(n).x = Xtrans * state.dataSurfaceGeometry->CosBldgRelNorth - Ytrans * state.dataSurfaceGeometry->SinBldgRelNorth;
 
-            SurfaceTmp(SurfNum).Vertex(n).y = Xtrans * SinBldgRelNorth + Ytrans * CosBldgRelNorth;
+            SurfaceTmp(SurfNum).Vertex(n).y = Xtrans * state.dataSurfaceGeometry->SinBldgRelNorth + Ytrans * state.dataSurfaceGeometry->CosBldgRelNorth;
         }
     }
 

@@ -353,8 +353,8 @@ TEST_F(EnergyPlusFixture, BaseboardConvWater_SizingTest)
     SurfaceGeometry::SinZoneRelNorth(2) = std::sin(-DataHeatBalance::Zone(2).RelNorth * DataGlobalConstants::DegToRadians());
     SurfaceGeometry::SinZoneRelNorth(3) = std::sin(-DataHeatBalance::Zone(3).RelNorth * DataGlobalConstants::DegToRadians());
 
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     SurfaceGeometry::GetSurfaceData(state, errorsFound);
     ASSERT_FALSE(errorsFound);

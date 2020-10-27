@@ -321,8 +321,8 @@ TEST_F(EnergyPlusFixture, DElightManagerF_GetInputDElightComplexFenestration_Tes
 
     SurfaceGeometry::CosZoneRelNorth(1) = std::cos(-DataHeatBalance::Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     SurfaceGeometry::SinZoneRelNorth(1) = std::sin(-DataHeatBalance::Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     SurfaceGeometry::GetSurfaceData(state, foundErrors); // setup zone geometry and get zone data
     EXPECT_FALSE(foundErrors);                    // expect no errors

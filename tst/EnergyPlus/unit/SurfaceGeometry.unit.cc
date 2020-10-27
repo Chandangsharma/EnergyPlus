@@ -484,8 +484,8 @@ TEST_F(EnergyPlusFixture, DataSurfaces_SurfaceShape)
 
     CosZoneRelNorth(1) = std::cos(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-    CosBldgRelNorth = 1.0;
-    SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     GetSurfaceData(state, ErrorsFound); // setup zone geometry and get zone data
     EXPECT_FALSE(ErrorsFound);   // expect no errors
@@ -936,8 +936,8 @@ TEST_F(EnergyPlusFixture, MakeEquivalentRectangle)
     SinZoneRelNorth.allocate(1);
     CosZoneRelNorth(1) = std::cos(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
-    CosBldgRelNorth = 1.0;
-    SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
     GetSurfaceData(state, ErrorsFound); // setup zone geometry and get zone data
     EXPECT_FALSE(ErrorsFound);   // expect no errors
 
@@ -2840,8 +2840,8 @@ TEST_F(EnergyPlusFixture, MakeRectangularVertices)
     CosZoneRelNorth(zoneNum) = std::cos(-Zone(zoneNum).RelNorth * DataGlobalConstants::DegToRadians());
     SinZoneRelNorth(zoneNum) = std::sin(-Zone(zoneNum).RelNorth * DataGlobalConstants::DegToRadians());
 
-    CosBldgRelNorth = 1.0;
-    SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     // facing north
 
@@ -3003,8 +3003,8 @@ TEST_F(EnergyPlusFixture, SurfaceGeometry_VertexNumberMismatchTest)
 
     CosZoneRelNorth = 1.0;
     SinZoneRelNorth = 0.0;
-    SinBldgRelNorth = 0.0;
-    CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
 
     GetHTSurfaceData(state, ErrorsFound, SurfNum, TotHTSurfs, 0, 0, 0, BaseSurfCls, BaseSurfIDs, NeedToAddSurfaces);
 
@@ -3894,8 +3894,8 @@ TEST_F(EnergyPlusFixture, SurfaceGeometry_HeatTransferAlgorithmTest)
     SinZoneRelNorth(1) = std::sin(-Zone(1).RelNorth * DataGlobalConstants::DegToRadians());
     CosZoneRelNorth(2) = CosZoneRelNorth(1);
     SinZoneRelNorth(2) = SinZoneRelNorth(1);
-    CosBldgRelNorth = 1.0;
-    SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
     GetSurfaceData(state, ErrorsFound); // setup zone geometry and get zone data
     EXPECT_FALSE(ErrorsFound);   // expect no errors
@@ -4013,8 +4013,8 @@ TEST_F(EnergyPlusFixture, SurfaceGeometry_SurfaceReferencesNonExistingSurface)
 
     CosZoneRelNorth = 1.0;
     SinZoneRelNorth = 0.0;
-    SinBldgRelNorth = 0.0;
-    CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
 
     GetHTSurfaceData(state, ErrorsFound, SurfNum, TotHTSurfs, 0, 0, 0, BaseSurfCls, BaseSurfIDs, NeedToAddSurfaces);
 

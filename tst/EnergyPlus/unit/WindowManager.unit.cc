@@ -2524,11 +2524,11 @@ TEST_F(EnergyPlusFixture, SpectralAngularPropertyTest)
     SurfaceGeometry::SinZoneRelNorth(3) = std::sin(-DataHeatBalance::Zone(3).RelNorth * DataGlobalConstants::DegToRadians());
     SurfaceGeometry::SinZoneRelNorth(4) = std::sin(-DataHeatBalance::Zone(4).RelNorth * DataGlobalConstants::DegToRadians());
 
-    SurfaceGeometry::CosBldgRelNorth = 1.0;
-    SurfaceGeometry::SinBldgRelNorth = 0.0;
+    state.dataSurfaceGeometry->CosBldgRelNorth = 1.0;
+    state.dataSurfaceGeometry->SinBldgRelNorth = 0.0;
 
-    SurfaceGeometry::CosBldgRotAppGonly = 1.0;
-    SurfaceGeometry::SinBldgRotAppGonly = 0.0;
+    state.dataSurfaceGeometry->CosBldgRotAppGonly = 1.0;
+    state.dataSurfaceGeometry->SinBldgRotAppGonly = 0.0;
 
     SurfaceGeometry::GetSurfaceData(state, FoundError); // setup zone geometry and get zone data
     EXPECT_FALSE(FoundError);                    // expect no errors
