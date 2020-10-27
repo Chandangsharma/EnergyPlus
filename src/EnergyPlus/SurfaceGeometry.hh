@@ -108,7 +108,6 @@ namespace SurfaceGeometry {
     // SUBROUTINE SPECIFICATIONS FOR MODULE SurfaceGeometry
 
     // Object Data
-    extern Array1D<DataSurfaces::SurfaceData> SurfaceTmp; // Allocated/Deallocated during input processing
     extern HeatBalanceKivaManager::KivaManager kivaManager;
 
     // Functions
@@ -295,7 +294,7 @@ namespace SurfaceGeometry {
                                Real64 &SurfTilt     // Surface tilt (
     );
 
-    void MakeMirrorSurface(int &SurfNum); // In=>Surface to Mirror, Out=>new Surface index
+    void MakeMirrorSurface(EnergyPlusData &state, int &SurfNum); // In=>Surface to Mirror, Out=>new Surface index
 
     void GetWindowShadingControlData(EnergyPlusData &state, bool &ErrorsFound); // If errors found in input
 
@@ -418,7 +417,8 @@ namespace SurfaceGeometry {
                                          SurfaceGeometry::enclosureType const &EnclosureType,                       // Radiant or Solar
                                          bool &ErrorsFound);                                                        // Set to true if errors found
 
-    void CheckConvexity(int SurfNum, // Current surface number
+    void CheckConvexity(EnergyPlusData &state,
+                        int SurfNum, // Current surface number
                         int NSides   // Number of sides to figure
     );
 
@@ -436,10 +436,11 @@ namespace SurfaceGeometry {
 
 struct SurfaceGeometryData : BaseGlobalStruct {
 
+    Array1D<DataSurfaces::SurfaceData> SurfaceTmp;
 
     void clear_state() override
     {
-
+        this->SurfaceTmp.deallocate();
     }
 };
 
